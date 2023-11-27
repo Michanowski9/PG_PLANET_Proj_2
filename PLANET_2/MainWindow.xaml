@@ -1,0 +1,47 @@
+﻿<Window x:Class="PLANET_2.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PLANET_2"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="810">
+    <Grid>
+        <local:UserControl1></local:UserControl1>
+        <ListBox Name="ProcessListListBox" ItemsSource="{Binding mprocessListObservable}" SelectedIndex="{Binding selectedIndex}" HorizontalContentAlignment="Stretch" Margin="10,20,0,10" HorizontalAlignment="Left" Width="390">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid ToolTip="{Binding priority}">
+                        <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding name}" Width="50"/>
+                        <TextBlock Grid.Row="0" Grid.Column="3" Text="{Binding id}"/>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        
+        <Button Command="{Binding sortCommand}" HorizontalAlignment="Right" Margin="0,10,10,0" VerticalAlignment="Top" Width="95">Sort</Button>
+        <Button Command="{Binding refreshCommand}" HorizontalAlignment="Right" Margin="0,35,10,0" VerticalAlignment="Top" Width="95">Refresh</Button>
+        <Label Content="{Binding refreshTime}" HorizontalAlignment="Right" Margin="0,60,10,0" VerticalAlignment="Top" Width="95"></Label>
+        <Slider Value="{Binding refreshTime}" Maximum="5000" TickPlacement="BottomRight" TickFrequency="100" HorizontalAlignment="Right" Margin="0,89,10,0" VerticalAlignment="Top" Width="95"/>
+        <Button Command="{Binding startCommand}" HorizontalAlignment="Right" Margin="0,118,60,0" VerticalAlignment="Top" Width="45">Start</Button>
+        <Button Command="{Binding stopCommand}" HorizontalAlignment="Right" Margin="0,118,10,0" VerticalAlignment="Top" Width="45">Stop</Button>
+        <TextBox Text="{Binding filterText}" HorizontalAlignment="Right" Margin="0,150,10,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="95"/>
+        <Button Command="{Binding filterCommand}" HorizontalAlignment="Right" Margin="0,173,10,0" VerticalAlignment="Top" Width="95">Filter</Button>
+
+        <Label Content="name:" HorizontalAlignment="Left" Margin="419,10,0,0" VerticalAlignment="Top" Width="40" Height="20" Padding="0,0,0,0"></Label>
+        <Label Content="{Binding processName}" HorizontalAlignment="Left" Margin="479,10,0,0" VerticalAlignment="Top" Width="200" Height="20" Padding="0,0,0,0"></Label>
+        <Label Content="id:" HorizontalAlignment="Left" Margin="419,35,0,0" VerticalAlignment="Top" Width="40" Height="20" Padding="0,0,0,0"/>
+        <Label Content="{Binding processID}" HorizontalAlignment="Left" Margin="479,35,0,0" VerticalAlignment="Top" Width="200" Height="20" Padding="0,0,0,0"></Label>
+        <Label Content="prtiority:" HorizontalAlignment="Left" Margin="419,60,0,0" VerticalAlignment="Top" Width="55" Height="20" Padding="0,0,0,0"/>
+        <Label Content="{Binding processPriority}" HorizontalAlignment="Left" Margin="479,60,0,0" VerticalAlignment="Top" Width="200" Height="20" Padding="0,0,0,0"></Label>
+        <Label Content="memory [B]:" HorizontalAlignment="Left" Margin="419,85,0,0" VerticalAlignment="Top" Width="55" Height="20" Padding="0,0,0,0" FontSize="10" VerticalContentAlignment="Center"/>
+        <Label Content="{Binding processMemory}" HorizontalAlignment="Left" Margin="479,85,0,0" VerticalAlignment="Top" Width="200" Height="20" Padding="0,0,0,0"/>
+        <Label Content="procesor&#10;total time[s]:" HorizontalAlignment="Left" Margin="419,110,0,0" VerticalAlignment="Top" Width="55" Height="20" Padding="0,0,0,0" FontSize="8"/>
+        <Label Content="{Binding processTime}" HorizontalAlignment="Left" Margin="479,110,0,0" VerticalAlignment="Top" Width="200" Height="20" Padding="0,0,0,0"/>
+
+        <ListBox Name="ProcessPriority" Margin="419,0,0,60" ItemsSource="{Binding priorityClasses}" SelectedIndex="{Binding selectedPriority}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="200" Height="150" />
+        <Button Command="{Binding setPriorityCommand}" HorizontalAlignment="Left" Margin="419,0,0,35" VerticalAlignment="Bottom" Width="200">Set priority</Button>
+        <Button Command="{Binding killCommand}" HorizontalAlignment="Left" Margin="419,0,0,10" VerticalAlignment="Bottom" Width="200">Kill process</Button>
+
+    </Grid>
+</Window>
