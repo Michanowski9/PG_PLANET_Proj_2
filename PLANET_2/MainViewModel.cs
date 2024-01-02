@@ -14,8 +14,16 @@ namespace PLANET_2
 	internal class MainViewModel : ObservableObject
 	{
 		public ObservableCollection<MyProcess> mprocessListObservable { get; set; }
-		public ObservableCollection<string> processListObservable { get; set; }
-		public int refreshTime { get; set; }
+		public int refreshTime
+		{
+			get => _refreshTime;
+			set
+			{
+				_refreshTime = value;
+				OnPropertyChanged();
+			}
+		}
+		private int _refreshTime = 0;
 		public string priority { get; set; }
 		public string filterText { get; set; }
 		public int selectedIndex
@@ -123,18 +131,7 @@ namespace PLANET_2
 		public MainViewModel()
 		{
 			priorityClasses = Enum.GetValues(typeof(ProcessPriorityClass)).Cast<ProcessPriorityClass>().ToList();
-			mprocessListObservable = new ObservableCollection<MyProcess>(
-				Process.GetProcesses().Select(
-					item => new MyProcess(item)
-					/*{
-						name = item.ProcessName.ToString(),
-						id = item.Id,
-						priority = item.PriorityClass.ToString() != null ? item.PriorityClass.ToString() : "",
-					}*/
-					).ToList());
-			processListObservable = new ObservableCollection<string>(
-				Process.GetProcesses().Select(item => item.ProcessName.ToString()).ToList()
-				);
+			mprocessListObservable = new ObservableCollection<MyProcess>(Process.GetProcesses().Select(item => new MyProcess(item)).ToList());
 
 			sortCommand = new RelayCommand(Sort);
 			refreshCommand = new RelayCommand(Refresh);
@@ -155,21 +152,22 @@ namespace PLANET_2
 		{
 			Trace.WriteLine("Refresh");
 
-			processListObservable.Clear();
-			foreach (var process in Process.GetProcesses().Select(item => item.ProcessName.ToString()).ToList())
+			mprocessListObservable.Clear();
+			var processesList = Process.GetProcesses();
+			foreach (var process in processesList)
 			{
-				processListObservable.Add(process);
+				mprocessListObservable.Add(new MyProcess(process));
 			}
 		}
 		private void Sort(object obj)
 		{
 			Trace.WriteLine("Sort");
-			var sortedCollection = new ObservableCollection<string>(processListObservable.OrderBy(x => x));
+			var sortedCollection = new ObservableCollection<MyProcess>(mprocessListObservable.OrderBy(x => x.name));
 
-			processListObservable.Clear();
+			mprocessListObservable.Clear();
 			foreach (var item in sortedCollection)
 			{
-				processListObservable.Add(item);
+				mprocessListObservable.Add(item);
 			}
 		}
 		private void Start(object obj)
@@ -188,14 +186,14 @@ namespace PLANET_2
 		private void Filter(object obj)
 		{
 			Trace.WriteLine("Filter");
-			var collectionCopy = new ObservableCollection<string>(processListObservable);
+			var collectionCopy = new ObservableCollection<MyProcess>(mprocessListObservable);
 
-			processListObservable.Clear();
+			mprocessListObservable.Clear();
 			foreach (var item in collectionCopy)
 			{
-				if (item.Contains(filterText))
+				if (item.name.Contains(filterText))
 				{
-					processListObservable.Add(item);
+					mprocessListObservable.Add(item);
 				}
 			}
 		}
@@ -203,7 +201,7 @@ namespace PLANET_2
 		{
 			Trace.WriteLine("Change priority [" + selectedIndex.ToString() + "] to: " + "");
 
-			var procName = processListObservable.ElementAt(selectedIndex);
+			var procName = mprocessListObservable.ElementAt(selectedIndex).name;
 			var proc = Process.GetProcesses().First(item => item.ProcessName == procName);
 
 			try
@@ -220,7 +218,7 @@ namespace PLANET_2
 		{
 			Trace.WriteLine("Kill process [" + selectedIndex.ToString() + "]");
 
-			var procName = processListObservable.ElementAt(selectedIndex);
+			var procName = mprocessListObservable.ElementAt(selectedIndex).name;
 			var proc = Process.GetProcesses().First(item => item.ProcessName == procName);
 
 			try
@@ -237,7 +235,7 @@ namespace PLANET_2
 		{
 			Trace.WriteLine("Process info [" + selectedIndex.ToString() + "]");
 
-			var procName = processListObservable.ElementAt(selectedIndex);
+			var procName = mprocessListObservable.ElementAt(selectedIndex).name;
 			var proc = Process.GetProcesses().First(item => item.ProcessName == procName);
 
 			processName = proc.ProcessName;
